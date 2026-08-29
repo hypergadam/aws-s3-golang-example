@@ -10,7 +10,8 @@ import (
 )
 
 func New(ctx context.Context, region string) (*s3.Client, error) {
-	cfg, err := config.LoadDefaultConfig(ctx,
+	cfg, err := config.LoadDefaultConfig(
+		ctx,
 		config.WithRegion(region),
 		config.WithRetryMaxAttempts(3),
 		config.WithRetryMode(aws.RetryModeAdaptive),

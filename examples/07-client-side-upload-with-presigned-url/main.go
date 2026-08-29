@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/hypergadam/aws-s3-upload-tutorial/internal/s3client"
-	"github.com/joho/godotenv"
 	"io"
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/google/uuid"
+	"github.com/hypergadam/aws-s3-upload-tutorial/internal/s3client"
+	"github.com/joho/godotenv"
 )
 
 func uploadToPresignedURL(ctx context.Context, presignedURL, filePath string) error {

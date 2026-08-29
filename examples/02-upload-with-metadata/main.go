@@ -4,16 +4,17 @@ import (
 	"cmp"
 	"context"
 	"fmt"
+	"log/slog"
+	"mime"
+	"os"
+	"path/filepath"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/google/uuid"
 	"github.com/hypergadam/aws-s3-upload-tutorial/internal/s3client"
 	"github.com/joho/godotenv"
-	"log/slog"
-	"mime"
-	"os"
-	"path/filepath"
 )
 
 func uploadFileWithMetadata(

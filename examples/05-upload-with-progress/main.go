@@ -3,16 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
+	"log/slog"
+	"os"
+	"sync/atomic"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
 	"github.com/hypergadam/aws-s3-upload-tutorial/internal/s3client"
 	"github.com/joho/godotenv"
-	"io"
-	"log/slog"
-	"os"
-	"sync/atomic"
 )
 
 type ProgressReader struct {

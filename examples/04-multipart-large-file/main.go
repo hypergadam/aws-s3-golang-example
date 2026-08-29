@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
+	"os"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
 	"github.com/hypergadam/aws-s3-upload-tutorial/internal/s3client"
 	"github.com/joho/godotenv"
-	"log/slog"
-	"os"
 )
 
 func uploadLargeFile(
