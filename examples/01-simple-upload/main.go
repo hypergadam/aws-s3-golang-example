@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/google/uuid"
-	"github.com/hypergadam/aws-s3-upload-tutorial/internal/s3client"
-	"github.com/joho/godotenv"
 	"log/slog"
 	"os"
+	"uuid"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/hypergadam/aws-s3-upload-tutorial/internal/s3client"
+	"github.com/joho/godotenv"
 )
 
 func uploadFile(ctx context.Context, client *s3.Client, bucketName, objectKey, filePath string) error {

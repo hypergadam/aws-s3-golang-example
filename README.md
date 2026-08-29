@@ -17,6 +17,7 @@ This repository is divided into specific runnable examples located in the `examp
 - `08-concurrent-upload/` - Upload multiple files concurrently using a worker pool pattern.
 - `09-presigned-url-with-custom-metadata/` - Enforce specific headers/metadata on presigned URLs.
 - `10-upload-with-error-handling/` - Check for specific S3 error types (`NoSuchBucket`, etc).
+- `11-production-ready-service/` - A complete production-ready service incorporating `transfermanager`, file validation, and encryption.
 
 The shared AWS S3 client setup is located in `internal/s3client/client.go`.
 
