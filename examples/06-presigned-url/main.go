@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -45,12 +46,12 @@ func main() {
 	bucketName := os.Getenv("AWS_S3_BUCKET_NAME")
 	objectKey := uuid.New().String()
 
-	client, err := s3client.New(ctx, region)
+	client, err := s3client.New(ctx, region, os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
-	filePath := "/home/hypergadam/Desktop/photo_2026-05-20_22-00-41.jpg"
+	_ = "/home/hypergadam/Desktop/photo_2026-05-20_22-00-41.jpg"
 
 	url, err := generatePresignedUploadURL(ctx, client, bucketName, objectKey, 15*time.Minute)
 	if err != nil {

@@ -151,7 +151,7 @@ func main() {
 	region := os.Getenv("AWS_S3_REGION")
 	bucketName := os.Getenv("AWS_S3_BUCKET_NAME")
 
-	client, err := s3client.New(ctx, region)
+	client, err := s3client.New(ctx, region, os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"))
 	if err != nil {
 		panic(err)
 	}
@@ -177,9 +177,21 @@ func main() {
 	// Create a dummy file if it doesn't exist just so the example can run
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		dummyFile, _ := os.Create(filePath)
-		dummyFile.Write([]byte("\xFF\xD8\xFF\xE0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00")) // Valid JPEG header
-		dummyFile.Close()
-		defer os.Remove(filePath)
+		_, err := dummyFile.Write([]byte("\xFF\xD8\xFF\xE0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00"))
+		if err != nil {
+			return
+		}
+		// Valid JPEG header
+		err = dummyFile.Close()
+		if err != nil {
+			return
+		}
+
+		defer func(name string) {
+			err := os.Remove(name)
+			if err != nil {
+			}
+		}(filePath)
 	}
 
 	objectKey := uuid.New().String()

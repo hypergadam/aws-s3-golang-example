@@ -2,27 +2,20 @@ package s3client
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-func New(ctx context.Context, region string) (*s3.Client, error) {
-	cfg, err := config.LoadDefaultConfig(
-		ctx,
-		config.WithRegion(region),
-		config.WithRetryMaxAttempts(3),
-		config.WithRetryMode(aws.RetryModeAdaptive),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load aws config: %w", err)
-	}
-
-	// create s3 client with custom options.
-	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
-		o.UsePathStyle = true
+func New(_ context.Context, region, accessKey, secretKey string) (*s3.Client, error) {
+	// Create S3 client bypassing LoadDefaultConfig to avoid locally variant configurations.
+	client := s3.New(s3.Options{
+		Region:           region,
+		Credentials:      aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")),
+		RetryMaxAttempts: 3,
+		RetryMode:        aws.RetryModeAdaptive,
+		UsePathStyle:     true,
 	})
 
 	return client, nil

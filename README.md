@@ -29,17 +29,10 @@ The shared AWS S3 client setup is located in `internal/s3client/client.go`.
 
 ## Setup & Authentication
 
-Before running the examples, you must configure your AWS credentials. You can do this in two ways:
+To ensure consistent behavior across environments and avoid locally variant configurations (such as `~/.aws/credentials`), this project explicitly requires AWS credentials to be provided via environment variables.
 
-### Option 1: Using AWS CLI (Recommended for Local Dev)
-Run the following command in your terminal and enter your Access Key ID and Secret Access Key:
-```bash
-aws configure
-```
-This saves your credentials securely in `~/.aws/credentials` outside of your project directory.
-
-### Option 2: Using the `.env` file
-Alternatively, you can provide your credentials directly in the `.env` file. The Go SDK will automatically detect them. 
+### Using the `.env` file (or Environment Variables)
+You can provide your credentials directly in the `.env` file or export them to your environment. The application will read them and inject them directly into the S3 client configuration. 
 
 1. **Clone the repository:**
    ```bash
@@ -79,7 +72,7 @@ go run ./examples/01-simple-upload
 
 ## Security & Best Practices
 
-- **Credentials:** Refer to the caution above. Rely on environment variables, `~/.aws/credentials`, or IAM roles in production.
+- **Credentials:** Refer to the caution above. We explicitly inject static credentials into the S3 client to avoid relying on locally variant configurations. In production, ensure these environment variables are injected securely.
 - **Multipart Upload:** Use `transfermanager` for files larger than a few megabytes to improve stability, reliability, and speed.
 - **Presigned URLs:** Rely on Presigned URLs to offload large file transfers from your backend server to S3 directly, saving bandwidth and processing power.
 

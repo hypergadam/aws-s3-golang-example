@@ -62,7 +62,7 @@ func main() {
 	bucketName := os.Getenv("AWS_S3_BUCKET_NAME")
 	objectKey := uuid.New().String()
 
-	client, err := s3client.New(ctx, region)
+	client, err := s3client.New(ctx, region, os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"))
 	if err != nil {
 		panic(err)
 	}

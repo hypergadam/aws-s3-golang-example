@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -41,14 +42,14 @@ func main() {
 	ctx := context.Background()
 	region := os.Getenv("AWS_S3_REGION")
 	bucketName := os.Getenv("AWS_S3_BUCKET_NAME")
-	objectKey := uuid.New().String()
+	_ = uuid.New().String()
 
-	client, err := s3client.New(ctx, region)
+	client, err := s3client.New(ctx, region, os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"))
 	if err != nil {
 		panic(err)
 	}
 
-	filePath := "/home/hypergadam/Desktop/photo_2026-05-20_22-00-41.jpg"
+	_ = "/home/hypergadam/Desktop/photo_2026-05-20_22-00-41.jpg"
 
 	data := []byte("Hello, S3 from memory!")
 	err = uploadFromMemory(ctx, client, bucketName, "memory-test.txt", data, "text/plain")
