@@ -25,9 +25,21 @@ The shared AWS S3 client setup is located in `internal/s3client/client.go`.
 
 - Go 1.20+
 - An AWS Account
-- Valid AWS credentials with S3 access (e.g., via `~/.aws/credentials`)
+- Valid AWS credentials with S3 access
 
-## Setup
+## Setup & Authentication
+
+Before running the examples, you must configure your AWS credentials. You can do this in two ways:
+
+### Option 1: Using AWS CLI (Recommended for Local Dev)
+Run the following command in your terminal and enter your Access Key ID and Secret Access Key:
+```bash
+aws configure
+```
+This saves your credentials securely in `~/.aws/credentials` outside of your project directory.
+
+### Option 2: Using the `.env` file
+Alternatively, you can provide your credentials directly in the `.env` file. The Go SDK will automatically detect them. 
 
 1. **Clone the repository:**
    ```bash
@@ -40,9 +52,17 @@ The shared AWS S3 client setup is located in `internal/s3client/client.go`.
    ```bash
    cp .env.example .env
    ```
-   *Required variables:*
-   - `AWS_S3_REGION` (e.g., `us-east-1`)
-   - `AWS_S3_BUCKET_NAME` (e.g., `my-app-bucket`)
+   Open `.env` and configure your settings:
+   ```ini
+   AWS_S3_REGION=us-east-1
+   AWS_S3_BUCKET_NAME=my-app-bucket
+   AWS_ACCESS_KEY_ID=your_access_key
+   AWS_SECRET_ACCESS_KEY=your_secret_key
+   ```
+
+> [!CAUTION]
+> **NEVER push your `.env` file or hardcoded credentials to GitHub!** 
+> If you expose your AWS Access Keys publicly, malicious bots will scrape them in seconds and can rack up massive bills on your AWS account. This project includes a `.gitignore` file that ignores the `.env` file by default to protect you.
 
 3. **Install Dependencies:**
    ```bash
@@ -59,6 +79,8 @@ go run ./examples/01-simple-upload
 
 ## Security & Best Practices
 
-- **Credentials:** Never hardcode your AWS credentials in the application. Rely on environment variables, `~/.aws/credentials`, or IAM roles.
-- **Multipart Upload:** Use `manager.Uploader` (transfermanager) for files larger than a few megabytes to improve stability, reliability, and speed.
+- **Credentials:** Refer to the caution above. Rely on environment variables, `~/.aws/credentials`, or IAM roles in production.
+- **Multipart Upload:** Use `transfermanager` for files larger than a few megabytes to improve stability, reliability, and speed.
 - **Presigned URLs:** Rely on Presigned URLs to offload large file transfers from your backend server to S3 directly, saving bandwidth and processing power.
+
+For more detailed security practices implemented in this repository, read [SECURITY_CONSIDERATIONS.md](SECURITY_CONSIDERATIONS.md).
