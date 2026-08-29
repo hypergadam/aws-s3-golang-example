@@ -70,6 +70,52 @@ You can test any of the upload strategies by running the specific example. For i
 go run ./examples/01-simple-upload
 ```
 
+## Docker
+
+The `Dockerfile` builds a single example into a minimal Alpine image that runs as a non-root user. Pick the example with the `EXAMPLE` build argument (defaults to `11-production-ready-service`):
+
+```bash
+docker build -t aws-s3-upload-backend .
+docker build --build-arg EXAMPLE=06-presigned-url -t aws-s3-upload-backend:presign .
+```
+
+Credentials are passed in at runtime — never bake them into the image:
+
+```bash
+docker run --rm --env-file .env aws-s3-upload-backend
+```
+
+Examples that read or write local sample files (e.g. `01-simple-upload`, `11-production-ready-service`) need that file mounted into the container:
+
+```bash
+docker run --rm --env-file .env -v "$PWD/photo.jpg:/home/app/photo.jpg:ro" aws-s3-upload-backend
+```
+
+## CI/CD
+
+`.github/workflows/docker-publish.yml` builds the image for `linux/amd64` and `linux/arm64` and pushes it to the GitHub Container Registry at `ghcr.io/<owner>/<repo>`. It needs no secrets — it authenticates with the built-in `GITHUB_TOKEN`.
+
+| Event | Tags pushed |
+| --- | --- |
+| Push to `main` | `sha-<short>`, `sha-<full>`, `main`, `latest` |
+| Push of a `v*.*.*` tag | `sha-<short>`, `sha-<full>`, `1.2.3`, `1.2` |
+| Pull request | none — image is built to verify it compiles, but not pushed |
+
+Every push is tagged with the commit SHA, so a deployment can always be pinned to the exact commit it came from:
+
+```bash
+docker pull ghcr.io/hypergadam/aws-s3-golang-example:sha-394ce85
+```
+
+The workflow also publishes an SBOM and a signed build provenance attestation for each image, verifiable with:
+
+```bash
+gh attestation verify oci://ghcr.io/hypergadam/aws-s3-golang-example:latest -R hypergadam/aws-s3-golang-example
+```
+
+> [!NOTE]
+> Packages published to GHCR are private by default. After the first successful run, open the package page on GitHub and set its visibility to public if you want it pullable without authentication.
+
 ## Security & Best Practices
 
 - **Credentials:** Refer to the caution above. We explicitly inject static credentials into the S3 client to avoid relying on locally variant configurations. In production, ensure these environment variables are injected securely.

@@ -1,0 +1,21 @@
+.git
+.github
+.idea
+
+# Never let credentials leak into the build context.
+.env
+.env.*
+!.env.example
+
+*.md
+
+Dockerfile
+.dockerignore
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
